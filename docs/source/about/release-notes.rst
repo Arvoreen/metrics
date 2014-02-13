@@ -4,6 +4,76 @@
 Release Notes
 #############
 
+.. _rel-3.0.1:
+
+v3.0.1: Jul 23 2013
+===================
+
+* Fixed NPE in ``MetricRegistry#name``.
+* ``ScheduledReporter`` and ``JmxReporter`` now implement ``Closeable``.
+* Fixed cast exception for async requests in ``metrics-jetty9``.
+* Added support for ``Access-Control-Allow-Origin`` to ``MetricsServlet``.
+* Fixed numerical issue with ``Meter`` EWMA rates.
+* Deprecated ``AdminServletContextListener`` in favor of ``MetricsServlet.ContextListener`` and
+  ``HealthCheckServlet.ContextListener``.
+* Added additional constructors to ``HealthCheckServlet`` and ``MetricsServlet``.
+
+.. _rel-3.0.0:
+
+v3.0.0: June 10 2013
+====================
+
+* Renamed ``DefaultWebappMetricsFilter`` to ``InstrumentedFilter``.
+* Renamed ``MetricsContextListener`` to ``InstrumentedFilterContextListener`` and made it fully
+  abstract to avoid confusion.
+* Renamed ``MetricsServletContextListener`` to ``AdminServletContextListener`` and made it fully
+  abstract to avoid confusion.
+* Upgraded to Servlet API 3.1.
+* Upgraded to Jackson 2.2.2.
+* Upgraded to Jetty 8.1.11.
+
+.. _rel-3.0.0-RC1:
+
+v3.0.0-RC1: May 31 2013
+=======================
+
+* Added ``SharedMetricRegistries``, a singleton for sharing named metric registries.
+* Fixed XML configuration for ``metrics-ehcache``.
+* Fixed XML configuration for ``metrics-jersey``.
+* Fixed XML configuration for ``metrics-log4j``.
+* Fixed XML configuration for ``metrics-logback``.
+* Fixed a counting bug in ``metrics-jetty9``'s InstrumentedHandler.
+* Added ``MetricsContextListener`` to ``metrics-servlet``.
+* Added ``MetricsServletContextListener`` to ``metrics-servlets``.
+* Extracted the ``Counting`` interface.
+* Reverted ``SlidingWindowReservoir`` to a synchronized implementation.
+* Added the implementation version to the JAR manifests.
+* Made dependencies for all modules conform to Maven Enforcer's convergence rules.
+* Fixed ``Slf4jReporter``'s logging of 99th percentiles.
+* Added optional name prefixing to ``GraphiteReporter``.
+* Added metric-specific overrides of rate and duration units to ``JmxReporter``.
+* Documentation fixes.
+
+.. _rel-3.0.0-BETA3:
+
+v3.0.0-BETA3: May 13 2013
+=========================
+
+* Added ``ScheduledReporter#report()`` for manual reporting.
+* Fixed overly-grabby catches in ``HealthCheck`` and
+  ``InstrumentedResourceMethodDispatchProvider``.
+* Fixed phantom reads in ``SlidingWindowReservoir``.
+* Revamped ``metrics-jetty9``, removing ``InstrumentedConnector`` and improving
+  the API.
+* Fixed OSGi imports for ``sun.misc``.
+* Added a strategy class for ``HttpClient`` metrics.
+* Upgraded to Jetty 9.0.3.
+* Upgraded to Jackson 2.2.1.
+* Upgraded to Ehcache 2.6.6.
+* Upgraded to Logback 1.0.13.
+* Upgraded to HttpClient 4.2.5.
+* Upgraded to gmetric4j 1.0.3, which allows for host spoofing.
+
 .. _rel-3.0.0-BETA2:
 
 v3.0.0-BETA2: Apr 22 2013

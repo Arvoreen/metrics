@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * <p/>
  * Given a method like this:
  * <pre><code>
- *     \@ExceptionMetered(name = "fancyName", cause=IllegalArgumentException.class)
+ *     {@literal @}ExceptionMetered(name = "fancyName", cause=IllegalArgumentException.class)
  *     public String fancyName(String name) {
  *         return "Sir Captain " + name;
  *     }
@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * <p/>
  * For instance, given a declaration of
  * <pre><code>
- *     \@ExceptionMetered
+ *     {@literal @}ExceptionMetered
  *     public String fancyName(String name) {
  *         return "Sir Captain " + name;
  *     }
@@ -49,7 +49,7 @@ public @interface ExceptionMetered {
     String name() default "";
 
     /**
-     * If {@code true}, use the given name an as absolute name. If {@code false}, use the given name
+     * If {@code true}, use the given name as an absolute name. If {@code false}, use the given name
      * relative to the annotated class.
      */
     boolean absolute() default false;

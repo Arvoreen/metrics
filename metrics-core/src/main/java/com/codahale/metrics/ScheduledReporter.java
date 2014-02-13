@@ -1,5 +1,6 @@
 package com.codahale.metrics;
 
+import java.io.Closeable;
 import java.util.Locale;
 import java.util.SortedMap;
 import java.util.concurrent.Executors;
@@ -16,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @see CsvReporter
  * @see Slf4jReporter
  */
-public abstract class ScheduledReporter {
+public abstract class ScheduledReporter implements Closeable {
     /**
      * A simple named thread factory.
      */
@@ -43,6 +44,8 @@ public abstract class ScheduledReporter {
         }
     }
 
+    private static final AtomicInteger FACTORY_ID = new AtomicInteger();
+
     private final MetricRegistry registry;
     private final ScheduledExecutorService executor;
     private final MetricFilter filter;
@@ -66,7 +69,7 @@ public abstract class ScheduledReporter {
                                 TimeUnit durationUnit) {
         this.registry = registry;
         this.filter = filter;
-        this.executor = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory(name));
+        this.executor = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory(name + '-' + FACTORY_ID.incrementAndGet()));
         this.rateFactor = rateUnit.toSeconds(1);
         this.rateUnit = calculateRateUnit(rateUnit);
         this.durationFactor = 1.0 / durationUnit.toNanos(1);
@@ -98,6 +101,14 @@ public abstract class ScheduledReporter {
         } catch (InterruptedException ignored) {
             // do nothing
         }
+    }
+
+    /**
+     * Stops the reporter and shuts down its thread of execution.
+     */
+    @Override
+    public void close() {
+        stop();
     }
 
     /**

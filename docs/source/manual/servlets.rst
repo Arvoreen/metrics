@@ -16,9 +16,10 @@ and returning ``501 Not Implemented`` if no health checks are registered, ``200 
 ``500 Internal Service Error`` if one or more fail. The results are returned as a human-readable
 ``text/plain`` entity.
 
-If the servlet context has an attributed named
-``com.codahale.metrics.servlet.HealthCheckServlet.registry`` which is a ``HealthCheckRegistry``,
-``HealthCheckServlet`` will use that instead of the default ``HealthCheckRegistry``.
+``HealthCheckServlet`` requires that the servlet context has a ``HealthCheckRegistry`` named
+``com.codahale.metrics.servlets.HealthCheckServlet.registry``. You can subclass
+``MetricsServletContextListener``, which will add a specific ``HealthCheckRegistry`` to the servlet
+context.
 
 .. _man-servlet-threaddump:
 
@@ -36,9 +37,10 @@ MetricsServlet
 
 ``MetricsServlet`` exposes the state of the metrics in a particular registry as a JSON object.
 
-If the servlet context has an attributed named
-``com.codahale.metrics.servlet.MetricsServlet.registry`` which is a ``MetricsRegistry``,
-``MetricsServlet`` will use that instead of the default ``MetricsRegistry``.
+``MetricsServlet`` requires that the servlet context has a ``MetricRegistry`` named
+``com.codahale.metrics.servlets.MetricsServlet.registry``. You can subclass
+``MetricsServletContextListener``, which will add a specific ``MetricRegistry`` to the servlet
+context.
 
 ``MetricsServlet`` also takes an initialization parameter, ``show-jvm-metrics``, which if ``"false"`` will
 disable the outputting of JVM-level information in the JSON object.
@@ -65,3 +67,62 @@ AdminServlet
   * ``/metrics``: ``MetricsServlet``
   * ``/ping``: ``PingServlet``
   * ``/threads``: ``ThreadDumpServlet``
+
+You will need to add your ``MetricRegistry`` and ``HealthCheckRegistry`` instances to the servlet
+context as attributes named ``com.codahale.metrics.servlets.MetricsServlet.registry`` and
+``com.codahale.metrics.servlets.HealthCheckServlet.registry``, respectively. You can do this using
+the Servlet API by extending ``MetricsServlet.ContextListener`` for MetricRegistry:
+
+.. code-block:: java
+
+    public class MyMetricsServletContextListener extends MetricsServlet.ContextListener {
+
+        public static final MetricRegistry METRIC_REGISTRY = new MetricRegistry();
+
+        @Override
+        protected MetricRegistry getMetricRegistry() {
+            return METRIC_REGISTRY;
+        }
+
+    }
+
+And by extending ``HealthCheckServlet.ContextListener`` for HealthCheckRegistry:
+
+.. code-block:: java
+
+    public class MyHealthCheckServletContextListener extends HealthCheckServlet.ContextListener {
+
+        public static final HealthCheckRegistry HEALTH_CHECK_REGISTRY = new HealthCheckRegistry();
+
+        @Override
+        protected HealthCheckRegistry getHealthCheckRegistry() {
+            return HEALTH_CHECK_REGISTRY;
+        }
+
+    }
+
+Then you will need to register servlet context listeners either in you ``web.xml`` or annotating the class with ``@WebListener`` if you are in servlet 3.0 environment. In ``web.xml``:
+
+.. code-block:: xml
+
+	<listener>
+		<listener-class>com.example.MyMetricsServletContextListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>com.example.MyHealthCheckServletContextListener</listener-class>
+	</listener>
+
+You will also need to register ``AdminServlet`` in ``web.xml``:
+
+.. code-block:: xml
+
+ 	<servlet>
+		<servlet-name>metrics</servlet-name>
+		<servlet-class>com.codahale.metrics.servlets.AdminServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>metrics</servlet-name>
+		<url-pattern>/metrics/*</url-pattern>
+	</servlet-mapping>
+
+

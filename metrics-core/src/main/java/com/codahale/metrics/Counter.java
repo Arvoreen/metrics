@@ -3,7 +3,7 @@ package com.codahale.metrics;
 /**
  * An incrementing and decrementing counter metric.
  */
-public class Counter implements Metric {
+public class Counter implements Metric, Counting {
     private final LongAdder count;
 
     public Counter() {
@@ -36,7 +36,7 @@ public class Counter implements Metric {
     /**
      * Decrement the counter by {@code n}.
      *
-     * @param n the amount by which the counter will be increased
+     * @param n the amount by which the counter will be decreased
      */
     public void dec(long n) {
         count.add(-n);
@@ -47,6 +47,7 @@ public class Counter implements Metric {
      *
      * @return the counter's current value
      */
+    @Override
     public long getCount() {
         return count.sum();
     }

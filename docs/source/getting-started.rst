@@ -152,7 +152,7 @@ percentiles.
 
 .. code-block:: java
 
-    private final Histogram responseSizes = metrics.histogram(name(RequestHandler.class, "response-sizes");
+    private final Histogram responseSizes = metrics.histogram(name(RequestHandler.class, "response-sizes"));
 
     public void handleRequest(Request request, Response response) {
         // etc
@@ -172,7 +172,7 @@ duration.
 
 .. code-block:: java
 
-    private final Timer responses = metrics.timer(name(RequestHandler.class, "responses");
+    private final Timer responses = metrics.timer(name(RequestHandler.class, "responses"));
 
     public String handleRequest(Request request, Response response) {
         final Timer.Context context = responses.time();
@@ -262,7 +262,7 @@ To report metrics via JMX:
     reporter.start();
 
 Once the reporter is started, all of the metrics in the registry will become visible via
-**JConsole** or **VisualVM** (if you install the JConsole plugin):
+**JConsole** or **VisualVM** (if you install the MBeans plugin):
 
 .. image:: metrics-visualvm.png
     :alt: Metrics exposed as JMX MBeans being viewed in VisualVM's MBeans browser
